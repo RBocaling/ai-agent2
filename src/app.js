@@ -190,23 +190,27 @@ app.get("/crypto-search", async (req, res) => {
 app.post("/crypto-info", async (req, res) => {
   const { comment } = req.body;
 
-  const ticker = await extractTicker(comment);
-  const info = await userComment(comment);
-  const geckoCoin = await fetchCryptoData(ticker);
+  try {
+    const ticker = await extractTicker(comment);
+    const info = await userComment(comment);
+    const geckoCoin = await fetchCryptoData(ticker);
 
-  if (!geckoCoin) {
-    console.log("Symbol not found on CoinGecko. Returning null.");
-    return res.json(null);
+    if (!geckoCoin) {
+      console.log("Symbol not found on CoinGecko. Returning null.");
+      return res.json(null);
+    }
+
+    console.log(`Found on CoinGecko: ${geckoCoin.symbol}, fetching chart...`);
+    const screenshotPath = await captureTradingChart(geckoCoin.symbol);
+
+    const imageUrl = `${req.protocol}://${req.get(
+      "host"
+    )}/savedImages/${screenshotPath}`;
+
+    res.json(`${info} ${imageUrl}`);
+  } catch (error) {
+    return res.status(500).json(`${error}`);
   }
-
-  console.log(`Found on CoinGecko: ${geckoCoin.symbol}, fetching chart...`);
-  const screenshotPath = await captureTradingChart(geckoCoin.symbol);
-
-  const imageUrl = `${req.protocol}://${req.get(
-    "host"
-  )}/savedImages/${screenshotPath}`;
-
-  res.json(`${info} ${imageUrl}` );
 
   // return res.sendFile(screenshotPath);
 
