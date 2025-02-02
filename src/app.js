@@ -9,7 +9,7 @@ import { fileURLToPath } from "url";
 import { extractTicker, userComment } from "./utils/openAiHelper.js";
 import { uploadLocalFileToFirestore } from "./services/addListing.js";
 // puppeteer.use(StealthPlugin());
-require("dotenv").config()
+require("dotenv").config();
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const app = express();
 app.use(express.json());
@@ -79,7 +79,12 @@ const captureTradingChart = async (symbol) => {
 
   try {
     browser = await puppeteer.launch({
-      args:["--disable-setuid-sandbox","--no-sanbox", "--single-process", "--no-zygote"],
+      args: [
+        "--disable-setuid-sandbox",
+        "--no-sanbox",
+        "--single-process",
+        "--no-zygote",
+      ],
 
       executablePath:
         process.env.NODE_ENV === "production"
