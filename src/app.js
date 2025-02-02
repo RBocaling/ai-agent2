@@ -212,19 +212,6 @@ app.post("/crypto-info", async (req, res) => {
 
   // res.json({ ticker, aiReply: info });
 });
-app.post("/", async (req, res) => {
-  const { comment } = req.body;
-
-  const ticker = await extractTicker(comment);
-  const info = await userComment(comment);
-  
-
-  res.json(`${info} ${ticker}` );
-
-  // return res.sendFile(screenshotPath);
-
-  // res.json({ ticker, aiReply: info });
-});
 
 
 
