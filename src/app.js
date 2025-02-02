@@ -1,5 +1,5 @@
 import express from "express";
-import puppeteer from "puppeteer-extra";
+import puppeteer from "puppeteer";
 import StealthPlugin from "puppeteer-extra-plugin-stealth";
 import fetch from "node-fetch";
 import fs from "fs";
@@ -8,7 +8,7 @@ import path from "path";
 import { fileURLToPath } from "url";
 import { extractTicker, userComment } from "./utils/openAiHelper.js";
 import {uploadLocalFileToFirestore} from './services/addListing.js'
-puppeteer.use(StealthPlugin());
+// puppeteer.use(StealthPlugin());
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const app = express();
@@ -78,10 +78,7 @@ const captureTradingChart = async (symbol) => {
   let browser;
 
   try {
-    browser = await puppeteer.launch({
-      headless: "new",
-      args: ["--no-sandbox"],
-    });
+    browser = await puppeteer.launch();
     const page = await browser.newPage();
     await page.setViewport({ width: 1400, height: 900 });
     await page.goto(tradingUrl, {
