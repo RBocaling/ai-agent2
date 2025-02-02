@@ -9,7 +9,10 @@ import { fileURLToPath } from "url";
 import { extractTicker, userComment } from "./utils/openAiHelper.js";
 import { uploadLocalFileToFirestore } from "./services/addListing.js";
 // puppeteer.use(StealthPlugin());
-require("dotenv").config();
+import dotenv from "dotenv";
+dotenv.config();
+
+
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const app = express();
 app.use(express.json());
