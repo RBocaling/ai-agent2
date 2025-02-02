@@ -7,9 +7,9 @@ import cors from "cors";
 import path from "path";
 import { fileURLToPath } from "url";
 import { extractTicker, userComment } from "./utils/openAiHelper.js";
-import {uploadLocalFileToFirestore} from './services/addListing.js'
+import { uploadLocalFileToFirestore } from "./services/addListing.js";
 // puppeteer.use(StealthPlugin());
-
+require("dotenv").config()
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const app = express();
 app.use(express.json());
@@ -78,7 +78,14 @@ const captureTradingChart = async (symbol) => {
   let browser;
 
   try {
-    browser = await puppeteer.launch();
+    browser = await puppeteer.launch({
+      args:["--disable-setuid-sandbox","--no-sanbox", "--single-process", "--no-zygote"],
+
+      executablePath:
+        process.env.NODE_ENV === "production"
+          ? process.env.PUPPETEER_EXECUTABLE_PATH
+          : puppeteer.executablePath(),
+    });
     const page = await browser.newPage();
     await page.setViewport({ width: 1400, height: 900 });
     await page.goto(tradingUrl, {
@@ -204,14 +211,12 @@ app.post("/crypto-info", async (req, res) => {
     "host"
   )}/savedImages/${screenshotPath}`;
 
-  res.json(`${info} ${imageUrl}` );
+  res.json(`${info} ${imageUrl}`);
 
   // return res.sendFile(screenshotPath);
 
   // res.json({ ticker, aiReply: info });
 });
-
-
 
 // Start the Express server
 app.listen(PORT, () =>
