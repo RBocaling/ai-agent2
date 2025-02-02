@@ -2,7 +2,7 @@
   "version": 2,
   "builds": [
     {
-      "src": "src/app.js",
+      "src": "./src/app.js",
       "use": "@vercel/node"
     }
   ],
@@ -11,19 +11,5 @@
       "src": "/(.*)",
       "dest": "src/app.js"
     }
-  ],
-  "installCommand": "npm install",
-  "functions": {
-    "api/**/*.js": {
-      "includeFiles": [
-        "node_modules/puppeteer-core/**",
-        "node_modules/puppeteer-extra/**",
-        "node_modules/puppeteer-extra-plugin-stealth/**"
-      ]
-    }
-  },
-  "env": {
-    "NODE_ENV": "production",
-    "PUPPETEER_SKIP_CHROMIUM_DOWNLOAD": "true"
-  }
+  ]
 }
