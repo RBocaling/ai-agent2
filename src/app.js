@@ -1,22 +1,18 @@
 import express from "express";
-import puppeteer from "puppeteer";
+import puppeteer from "puppeteer-extra";
 import StealthPlugin from "puppeteer-extra-plugin-stealth";
 import fetch from "node-fetch";
 import fs from "fs";
-import cors from "cors";
 import path from "path";
 import { fileURLToPath } from "url";
 import { extractTicker, userComment } from "./utils/openAiHelper.js";
-import { uploadLocalFileToFirestore } from "./services/addListing.js";
-// puppeteer.use(StealthPlugin());
-import dotenv from "dotenv";
-dotenv.config();
-
+import {uploadLocalFileToFirestore} from './services/addListing.js'
+puppeteer.use(StealthPlugin());
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const app = express();
 app.use(express.json());
-app.use(cors({ origin: "*" }));
+
 const PORT = process.env.PORT || 3000;
 const imagesFolder = path.join(__dirname, "savedImages");
 
@@ -82,17 +78,8 @@ const captureTradingChart = async (symbol) => {
 
   try {
     browser = await puppeteer.launch({
-      args: [
-        "--disable-setuid-sandbox",
-        "--no-sanbox",
-        "--single-process",
-        "--no-zygote",
-      ],
-
-      executablePath:
-        process.env.NODE_ENV === "production"
-          ? process.env.PUPPETEER_EXECUTABLE_PATH
-          : puppeteer.executablePath(),
+      headless: "new",
+      args: ["--no-sandbox"],
     });
     const page = await browser.newPage();
     await page.setViewport({ width: 1400, height: 900 });
@@ -219,12 +206,14 @@ app.post("/crypto-info", async (req, res) => {
     "host"
   )}/savedImages/${screenshotPath}`;
 
-  res.json(`${info} ${imageUrl}`);
+  res.json(`${info} ${imageUrl}` );
 
   // return res.sendFile(screenshotPath);
 
   // res.json({ ticker, aiReply: info });
 });
+
+
 
 // Start the Express server
 app.listen(PORT, () =>
